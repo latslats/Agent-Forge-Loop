@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+/* One indigo accent on neutral surfaces. light-dark() follows the OS color scheme. */
+@theme {
+  --color-canvas: light-dark(#f6f7f9, #0f1115);
+  --color-panel: light-dark(#ffffff, #161a21);
+  --color-sunken: light-dark(#eef1f5, #0b0d11);
+  --color-line: light-dark(#e2e5ea, #272c36);
+  --color-graphite: light-dark(#8b93a1, #6b7385);
+  --color-ink: light-dark(#161a22, #e7eaf0);
+  --color-muted: light-dark(#5b6372, #9aa3b2);
+  --color-accent: light-dark(#4f46e5, #5b5ff0);
+  --color-accent-ink: light-dark(#4338ca, #a5b4fc);
+  --color-accent-soft: light-dark(#eceefe, #1d2038);
+  --color-active: light-dark(#16a34a, #22c55e);
+  --color-paused: light-dark(#d97706, #f59e0b);
+  --color-danger: light-dark(#dc2626, #f87171);
+  --color-danger-solid: #dc2626;
+
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --radius-control: 8px;
+  --radius-surface: 12px;
+}
+
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Dot grid marks the canvas surface, the only textured area in the app. */
+@utility canvas-grid {
+  background-color: var(--color-sunken);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Ccircle cx='1' cy='1' r='1' fill='%238b93a1' fill-opacity='.45'/%3E%3C/svg%3E");
+}
+
+/* Canvas (features/canvas). React Flow reads its colours from CSS variables, so these point
+   them at our tokens. Selector is two classes deep so it beats React Flow's own defaults. */
+.canvas-surface {
+  background-color: var(--color-sunken);
+}
+
+/* Our Output node reuses React Flow's built-in "output" type, which adds its own box. Our card
+   draws the box, so the wrapper is cleared. */
+.canvas-surface .react-flow__node-output {
+  width: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+}
+
+.canvas-surface .react-flow {
+  --xy-background-color: transparent;
+  --xy-background-pattern-dots-color-default: color-mix(
+    in srgb,
+    var(--color-graphite) 55%,
+    transparent
+  );
+  --xy-edge-stroke-default: var(--color-graphite);
+  --xy-edge-stroke-selected-default: var(--color-accent);
+  --xy-edge-stroke-width-default: 1.5;
+  --xy-connectionline-stroke-default: var(--color-accent);
+  --xy-handle-background-color-default: var(--color-graphite);
+  --xy-handle-border-color-default: var(--color-panel);
+  --xy-edge-label-background-color-default: var(--color-panel);
+  --xy-edge-label-color-default: var(--color-muted);
+  --xy-controls-button-background-color-default: var(--color-panel);
+  --xy-controls-button-background-color-hover-default: var(--color-sunken);
+  --xy-controls-button-color-default: var(--color-ink);
+  --xy-controls-button-color-hover-default: var(--color-ink);
+  --xy-controls-button-border-color-default: var(--color-line);
+  --xy-controls-box-shadow-default: none;
+  --xy-selection-background-color-default: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  --xy-selection-border-default: 1px dashed var(--color-accent);
+  --xy-attribution-background-color-default: transparent;
+}
+
+/* A node that is running gets a ring that breathes outward. It sits in ::after so it does not
+   fight the selection ring, which uses box-shadow. */
+.canvas-node-running::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border: 2px solid var(--color-accent);
+  border-radius: calc(var(--radius-surface) + 5px);
+  pointer-events: none;
+  animation: canvas-pulse 1.6s ease-out infinite;
+}
+
+@keyframes canvas-pulse {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canvas-node-running::after {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
+/* CodeMirror in the inspector: no built-in theme, so it reads our tokens in both schemes. */
+.canvas-code .cm-editor {
+  background-color: var(--color-sunken);
+  color: var(--color-ink);
+  font-size: 13px;
+}
+
+.canvas-code .cm-editor.cm-focused {
+  outline: none;
+}
+
+.canvas-code .cm-scroller {
+  font-family: var(--font-mono);
+  line-height: 1.55;
+}
+
+.canvas-code .cm-content {
+  caret-color: var(--color-ink);
+  padding: 8px 0;
+}
+
+.canvas-code .cm-cursor {
+  border-left-color: var(--color-ink);
+}
+
+.canvas-code .cm-placeholder {
+  color: var(--color-muted);
+}
+
+.canvas-code .cm-editor.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground {
+  background-color: color-mix(in srgb, var(--color-accent) 28%, transparent);
+}

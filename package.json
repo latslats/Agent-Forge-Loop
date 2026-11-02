@@ -1,0 +1,30 @@
+{
+  "name": "agentforgeloop",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Agent Forge Loop — build, run, check and evaluate AI agents on a canvas.",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "workspaces": [
+    "packages/shared",
+    "apps/server",
+    "apps/web"
+  ],
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "npm run build --workspaces --if-present",
+    "check": "biome check . && npm run typecheck --workspaces --if-present && npm run test --workspaces --if-present",
+    "fix": "biome check --write .",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.15",
+    "@types/node": "^26.6.5",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.3"
+  }
+}
